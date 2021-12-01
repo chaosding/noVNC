@@ -19,7 +19,7 @@ export default class Keyboard {
         this._target = target || null;
 
         this._keyDownList = {};         // List of depressed keys
-                                        // (even if they are happy)
+        // (even if they are happy)
         this._pendingKey = null;        // Key waiting for keypress
         this._altGrArmed = false;       // Windows AltGr detection
 
@@ -34,7 +34,7 @@ export default class Keyboard {
 
         // ===== EVENT HANDLERS =====
 
-        this.onkeyevent = () => {}; // Handler for key press/release
+        this.onkeyevent = () => { }; // Handler for key press/release
     }
 
     // ===== PRIVATE METHODS =====
@@ -51,7 +51,7 @@ export default class Keyboard {
         }
 
         Log.Debug("onkeyevent " + (down ? "down" : "up") +
-                  ", keysym: " + keysym, ", code: " + code);
+            ", keysym: " + keysym, ", code: " + code);
         this.onkeyevent(keysym, code, down);
     }
 
@@ -264,7 +264,7 @@ export default class Keyboard {
         stopEvent(e);
 
         const code = this._getKeyCode(e);
-
+        console.log("key up event =" + e);
         // We can't get a release in the middle of an AltGr sequence, so
         // abort that detection
         if (this._altGrArmed) {
@@ -286,14 +286,14 @@ export default class Keyboard {
         // release events for a Shift button if the other Shift is still
         // pressed
         if (browser.isWindows() && ((code === 'ShiftLeft') ||
-                                    (code === 'ShiftRight'))) {
+            (code === 'ShiftRight'))) {
             if ('ShiftRight' in this._keyDownList) {
                 this._sendKeyEvent(this._keyDownList['ShiftRight'],
-                                   'ShiftRight', false);
+                    'ShiftRight', false);
             }
             if ('ShiftLeft' in this._keyDownList) {
                 this._sendKeyEvent(this._keyDownList['ShiftLeft'],
-                                   'ShiftLeft', false);
+                    'ShiftLeft', false);
             }
         }
     }
@@ -329,8 +329,10 @@ export default class Keyboard {
             }
 
             const event = new KeyboardEvent('keyup',
-                                            { key: downList[code],
-                                              code: code });
+                {
+                    key: downList[code],
+                    code: code
+                });
             event.skipCheckAlt = true;
             target.dispatchEvent(event);
         });
@@ -355,11 +357,13 @@ export default class Keyboard {
         if (browser.isWindows() && browser.isFirefox()) {
             const handler = this._eventHandlers.checkalt;
             ['mousedown', 'mouseup', 'mousemove', 'wheel',
-             'touchstart', 'touchend', 'touchmove',
-             'keydown', 'keyup'].forEach(type =>
-                document.addEventListener(type, handler,
-                                          { capture: true,
-                                            passive: true }));
+                'touchstart', 'touchend', 'touchmove',
+                'keydown', 'keyup'].forEach(type =>
+                    document.addEventListener(type, handler,
+                        {
+                            capture: true,
+                            passive: true
+                        }));
         }
 
         //Log.Debug("<< Keyboard.grab");
@@ -371,8 +375,8 @@ export default class Keyboard {
         if (browser.isWindows() && browser.isFirefox()) {
             const handler = this._eventHandlers.checkalt;
             ['mousedown', 'mouseup', 'mousemove', 'wheel',
-             'touchstart', 'touchend', 'touchmove',
-             'keydown', 'keyup'].forEach(type => document.removeEventListener(type, handler));
+                'touchstart', 'touchend', 'touchmove',
+                'keydown', 'keyup'].forEach(type => document.removeEventListener(type, handler));
         }
 
         this._target.removeEventListener('keydown', this._eventHandlers.keydown);
